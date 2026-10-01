@@ -1,0 +1,40 @@
+{% extends 'base.html' %}
+{% load humanize %}
+{% block title %}Arriendo de maquinaria pesada | Maquinarias Chile{% endblock %}
+{% block content %}
+<section class="hero">
+  <div class="hero-photo" role="img" aria-label="Maquinaria trabajando en un proyecto de construcción"></div>
+  <div class="hero-content page-wrap">
+    <p class="eyebrow eyebrow-light"><span></span> Arriendo de maquinaria en todo Chile</p>
+    <h1>EL PRÓXIMO<br>GRAN PROYECTO<br><em>PARTE AQUÍ.</em></h1>
+    <p class="hero-copy">Equipos confiables, listos cuando tu obra los necesita. Encuentra el indicado y coordina el retiro en tu región.</p>
+    <a class="button button-orange" href="#catalogo">Explorar maquinaria <span aria-hidden="true">↓</span></a>
+    <div class="hero-index"><span>01</span><span class="hero-index-line"></span><span>05 SEDES EN CHILE</span></div>
+  </div>
+</section>
+<section class="facts-strip" aria-label="Cobertura">
+  <div><strong>05</strong><span>Sedes regionales</span></div><div><strong>24/7</strong><span>Proyectos en movimiento</span></div><div><strong>100%</strong><span>Equipos inspeccionados</span></div><a href="#sedes">Conoce nuestra cobertura <span aria-hidden="true">↗</span></a>
+</section>
+<section class="catalog-section page-wrap" id="catalogo">
+  <div class="section-heading">
+    <div><p class="eyebrow"><span></span> Encuentra tu equipo</p><h2>FLOTA DISPONIBLE<span class="orange-dot">.</span></h2></div>
+    <p>Arrienda por los días que tu proyecto necesita.<br>La solicitud se confirma con nuestro equipo.</p>
+  </div>
+  <form class="catalog-tools" method="get" action="{% url 'catalog' %}">
+    <label class="search-field"><span class="visually-hidden">Buscar maquinaria</span><span aria-hidden="true">⌕</span><input type="search" name="q" value="{{ search_query }}" placeholder="Buscar equipo o marca"></label>
+    <label class="select-field"><span class="visually-hidden">Filtrar por categoría</span><select name="categoria"><option value="">Todas las categorías</option>{% for value,label in categories %}<option value="{{ value }}" {% if active_category == value %}selected{% endif %}>{{ label }}</option>{% endfor %}</select></label>
+    <button class="button button-dark" type="submit">Buscar equipos <span aria-hidden="true">↗</span></button>
+  </form>
+  <div class="equipment-grid">
+    {% for item in equipment %}
+      <article class="equipment-card" data-category="{{ item.category }}" data-search="{{ item.name }} {{ item.brand }}">
+        <a class="equipment-image" href="{% url 'equipment_detail' item.pk %}"><img src="{{ item.image_url }}" alt="{{ item.name }}" loading="lazy"><span class="availability"><i></i> Disponible</span><span class="image-arrow" aria-hidden="true">↗</span></a>
+        <div class="equipment-body"><div class="equipment-meta"><span>{{ item.get_category_display }}</span><span>{{ item.brand }}</span></div><h3><a href="{% url 'equipment_detail' item.pk %}">{{ item.name }}</a></h3><div class="equipment-bottom"><p><strong>${{ item.daily_rate|intcomma }}</strong><span> / día + IVA</span></p><a class="text-arrow" href="{% url 'equipment_detail' item.pk %}" aria-label="Ver {{ item.name }}">↗</a></div></div>
+      </article>
+    {% empty %}<div class="empty-state">{% if has_available_equipment %}<h3>No encontramos equipos para esta búsqueda</h3><p>Prueba con otra categoría o término de búsqueda.</p><a href="{% url 'catalog' %}">Ver catálogo completo ↗</a>{% else %}<h3>Por ahora no hay maquinaria disponible</h3><p>Vuelve a revisar pronto o contáctanos para conocer próximas disponibilidades.</p><a href="#sedes">Contactar una sede ↗</a>{% endif %}</div>{% endfor %}
+    <div class="empty-state" id="catalog-empty" hidden><h3>No encontramos equipos para esta búsqueda</h3><p>Prueba con otra categoría o término.</p></div>
+  </div>
+</section>
+<section class="branch-section" id="sedes"><div class="page-wrap branch-layout"><div><p class="eyebrow"><span></span> Estamos cerca de tu obra</p><h2>5 REGIONES.<br>UN MISMO ESTÁNDAR.</h2><p class="branch-copy">Coordina el retiro desde la sede que mejor se adapte a tu proyecto.</p></div><div class="branch-list">{% for branch in branches %}<div class="branch-row"><span class="branch-number">0{{ forloop.counter }}</span><div><strong>{{ branch.name }}</strong><span>{{ branch.region }} · {{ branch.address }}</span></div><a href="tel:{{ branch.phone }}" aria-label="Llamar a {{ branch.name }}">↗</a></div>{% endfor %}</div></div></section>
+<section class="closing-band"><div class="page-wrap closing-inner"><p class="eyebrow eyebrow-light"><span></span> ¿Listo para empezar?</p><h2>Tu proyecto no espera.<br><em>Tu equipo tampoco.</em></h2><a class="button button-orange" href="#catalogo">Ver maquinaria <span aria-hidden="true">↑</span></a></div></section>
+{% endblock %}

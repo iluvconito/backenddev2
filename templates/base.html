@@ -1,0 +1,41 @@
+{% load static %}
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#f4f5f2">
+  <title>{% block title %}Maquinarias Chile{% endblock %}</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700;800&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="{% static 'catalog/site.css' %}">
+  {% block extra_head %}{% endblock %}
+</head>
+<body>
+  <header class="site-header">
+    <a class="brand" href="{% url 'catalog' %}" aria-label="Maquinarias Chile, inicio"><span class="brand-mark">M</span><span>MAQUINARIAS<span class="brand-accent">CHILE</span></span></a>
+    <nav class="main-nav" aria-label="Navegación principal">
+      <a href="{% url 'catalog' %}#catalogo">Catálogo</a>
+      <a href="{% url 'catalog' %}#sedes">Sedes</a>
+      {% if user.is_authenticated %}
+        <a href="{% url 'my_rentals' %}">Mis arriendos</a>
+      {% endif %}
+    </nav>
+    <div class="header-actions">
+      {% if user.is_authenticated %}
+        <span class="user-greeting">Hola, {{ user.username }}</span>
+        <form action="{% url 'logout' %}" method="post">{% csrf_token %}<button class="button button-outline button-small" type="submit">Salir</button></form>
+      {% else %}
+        <a class="login-link" href="{% url 'login' %}">Ingresar</a>
+        <a class="button button-dark button-small" href="{% url 'register' %}">Crear cuenta <span aria-hidden="true">↗</span></a>
+      {% endif %}
+    </div>
+  </header>
+  {% if messages %}<div class="message-stack">{% for message in messages %}<div class="message {{ message.tags }}">{{ message }}</div>{% endfor %}</div>{% endif %}
+  <main>{% block content %}{% endblock %}</main>
+  <footer class="site-footer"><a class="brand brand-footer" href="{% url 'catalog' %}"><span class="brand-mark">M</span><span>MAQUINARIAS<span class="brand-accent">CHILE</span></span></a><span>Equipos que mueven proyectos.</span><span>© 2026 Maquinarias Chile</span></footer>
+  <script src="{% static 'catalog/site.js' %}" defer></script>
+  {% block extra_scripts %}{% endblock %}
+</body>
+</html>

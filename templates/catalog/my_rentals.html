@@ -1,0 +1,6 @@
+{% extends 'base.html' %}
+{% load humanize %}
+{% block title %}Mis arriendos | Maquinarias Chile{% endblock %}
+{% block content %}
+<section class="rentals-page page-wrap"><p class="eyebrow"><span></span> Tu cuenta</p><div class="section-heading"><div><h1>MIS ARRIENDOS<span class="orange-dot">.</span></h1></div><a class="button button-dark" href="{% url 'catalog' %}#catalogo">Buscar maquinaria <span aria-hidden="true">↗</span></a></div>{% for rental in rentals %}<article class="rental-row"><img src="{{ rental.equipment.image_url }}" alt=""><div class="rental-main"><span>{{ rental.get_status_display }}</span><h2>{{ rental.equipment.name }}</h2><p>{{ rental.start_date|date:'j M Y' }} — {{ rental.end_date|date:'j M Y' }} · {{ rental.branch.name }}</p></div><strong>${{ rental.total_price|intcomma }} CLP</strong></article>{% empty %}<div class="empty-state"><h2>Aún no tienes solicitudes</h2><p>Explora el catálogo y encuentra el equipo para tu próximo proyecto.</p><a href="{% url 'catalog' %}#catalogo">Ir al catálogo ↗</a></div>{% endfor %}</section>
+{% endblock %}

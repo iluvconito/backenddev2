@@ -1,0 +1,6 @@
+{% extends 'base.html' %}
+{% load humanize %}
+{% block title %}Solicitud recibida | Maquinarias Chile{% endblock %}
+{% block content %}
+<section class="confirmation-page page-wrap"><div class="confirmation-mark">✓</div><p class="eyebrow"><span></span> Solicitud MC-{{ rental.pk|stringformat:'04d' }}</p><h1>YA ESTAMOS<br><em>EN MARCHA.</em></h1><p class="confirmation-copy">Recibimos tu solicitud, {{ rental.customer_name }}. Nuestro equipo confirmará disponibilidad y se pondrá en contacto contigo.</p><div class="confirmation-details"><div><span>Equipo</span><strong>{{ rental.equipment.name }}</strong></div><div><span>Fechas</span><strong>{{ rental.start_date|date:'j M Y' }} — {{ rental.end_date|date:'j M Y' }}</strong></div><div><span>Sede de retiro</span><strong>{{ rental.branch.name }}, {{ rental.branch.region }}</strong></div><div><span>Estado</span><strong class="status-pill">{{ rental.get_status_display }}</strong></div></div><a class="button button-dark" href="{% url 'my_rentals' %}">Ver mis arriendos <span aria-hidden="true">↗</span></a></section>
+{% endblock %}
