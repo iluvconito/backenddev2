@@ -1,0 +1,17 @@
+{% extends "admin/base_site.html" %}
+{% block content %}
+  {% if request.user.is_superuser %}
+    <div class="module">
+      <table>
+        <caption><a href="{% url 'inventory_management' %}" class="section">Gestión de inventario</a></caption>
+        <tbody>
+          <tr>
+            <th scope="row"><a href="{% url 'inventory_management' %}">Administrar maquinaria y cantidades por sede</a></th>
+            <td>Agregar equipos y actualizar inventario disponible.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  {% endif %}
+  {% include "admin/app_list.html" with app_list=app_list show_changelinks=True %}
+{% endblock %}

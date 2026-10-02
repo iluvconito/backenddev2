@@ -1,0 +1,79 @@
+{% extends 'base.html' %}
+{% block title %}Gestión de inventario | Maquinarias Chile{% endblock %}
+{% block content %}
+<section class="inventory-page page-wrap">
+  <div class="section-heading">
+    <div><p class="eyebrow"><span></span> Panel de superadministración</p><h1>GESTIÓN DE INVENTARIO</h1></div>
+    <a class="button button-outline" href="{% url 'catalog' %}">Volver al catálogo <span aria-hidden="true">↗</span></a>
+  </div>
+  <div class="inventory-stats">
+    <div><strong>{{ equipment_count }}</strong><span>Tipos de maquinaria</span></div>
+    <div><strong>{{ branch_count }}</strong><span>Sedes registradas</span></div>
+    <div><strong>{{ inventory_count }}</strong><span>Registros de inventario</span></div>
+  </div>
+  <div class="inventory-forms">
+    <form class="inventory-form" method="post">
+      {% csrf_token %}
+      <input type="hidden" name="action" value="add-equipment">
+      <p class="eyebrow"><span></span> Nueva maquinaria</p>
+      <h2>Agregar equipo e inventario inicial</h2>
+      <p class="inventory-form-copy">Crea una maquinaria y registra sus unidades en una sede.</p>
+      {% for field in equipment_form %}
+        <div class="form-field">
+          <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+          {{ field }}
+          {% if field.help_text %}<span class="form-help">{{ field.help_text }}</span>{% endif %}
+          {% if field.errors %}<span class="field-error">{{ field.errors|join:', ' }}</span>{% endif %}
+        </div>
+      {% endfor %}
+      <button class="button button-orange button-wide" type="submit">Agregar maquinaria <span aria-hidden="true">↗</span></button>
+    </form>
+    <form class="inventory-form" method="post">
+      {% csrf_token %}
+      <input type="hidden" name="action" value="update-stock">
+      <p class="eyebrow"><span></span> Inventario por sede</p>
+      <h2>Actualizar cantidad</h2>
+      <p class="inventory-form-copy">Elige una maquinaria y sede. La cantidad ingresada reemplaza el total registrado allí.</p>
+      {% for field in stock_form %}
+        <div class="form-field">
+          <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+          {{ field }}
+          {% if field.help_text %}<span class="form-help">{{ field.help_text }}</span>{% endif %}
+          {% if field.errors %}<span class="field-error">{{ field.errors|join:', ' }}</span>{% endif %}
+        </div>
+      {% endfor %}
+      <button class="button button-dark button-wide" type="submit">Guardar inventario <span aria-hidden="true">↗</span></button>
+    </form>
+  </div>
+  <section class="inventory-table-section">
+    <div class="section-heading"><div><p class="eyebrow"><span></span> Estado registrado</p><h2>INVENTARIO POR SEDE</h2></div></div>
+    <div class="inventory-filter">
+      <div class="form-field">
+        <label for="inventory-branch-filter">Filtrar por sede</label>
+        <select class="form-control" id="inventory-branch-filter">
+          <option value="">Selecciona una sede</option>
+          {% for branch in branches %}
+            <option value="{{ branch.pk }}">{{ branch.name }} · {{ branch.region }}</option>
+          {% endfor %}
+        </select>
+      </div>
+      <div class="form-field">
+        <label for="inventory-equipment-filter">Buscar maquinaria por nombre</label>
+        <input class="form-control" id="inventory-equipment-filter" type="search" placeholder="Ej. Excavadora">
+      </div>
+      <button class="button button-outline" id="inventory-filter-clear" type="button">Limpiar filtros</button>
+    </div>
+    <div class="inventory-table-wrap">
+      <table class="inventory-table">
+        <thead><tr><th>Maquinaria</th><th>Sede</th><th>Ubicación</th><th>Unidades totales</th></tr></thead>
+        <tbody>
+          {% for stock in stock_items %}
+            <tr data-inventory-row data-branch-id="{{ stock.branch_id }}" data-equipment-name="{{ stock.equipment.name }}" hidden><td><strong>{{ stock.equipment.name }}</strong><small>{{ stock.equipment.brand }}</small></td><td>{{ stock.branch.name }}</td><td>{{ stock.branch.region }} · {{ stock.branch.address }}</td><td><strong>{{ stock.quantity }}</strong></td></tr>
+          {% endfor %}
+          <tr id="inventory-filter-empty"><td colspan="4">Selecciona una sede para consultar su inventario.</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+</section>
+{% endblock %}

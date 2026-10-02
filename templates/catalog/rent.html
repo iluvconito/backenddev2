@@ -2,5 +2,39 @@
 {% load humanize %}
 {% block title %}Solicitar arriendo | Maquinarias Chile{% endblock %}
 {% block content %}
-<section class="form-page page-wrap"><a class="back-link" href="{% url 'equipment_detail' item.pk %}">← Volver al equipo</a><div class="form-layout"><div class="form-intro"><p class="eyebrow"><span></span> Solicitud de arriendo</p><h1>RESERVA TU<br><em>EQUIPO.</em></h1><p>Completa los datos y revisaremos disponibilidad para tus fechas. La solicitud no genera un cobro inmediato.</p><div class="mini-equipment"><img src="{{ item.image_url }}" alt=""><div><strong>{{ item.name }}</strong><span>${{ item.daily_rate|intcomma }} CLP / día + IVA</span></div></div></div><form class="rental-form" method="post" novalidate>{% csrf_token %}<h2>Datos del arriendo</h2><p class="form-caption">Todos los campos son obligatorios.</p>{% if form.non_field_errors %}<div class="form-errors">{{ form.non_field_errors }}</div>{% endif %}{% for field in form %}<div class="form-field"><label for="{{ field.id_for_label }}">{{ field.label }}</label>{{ field }}{% if field.errors %}<span class="field-error">{{ field.errors|join:', ' }}</span>{% endif %}</div>{% endfor %}<div class="form-total"><span>Tarifa diaria</span><strong>${{ item.daily_rate|intcomma }} CLP <small>+ IVA</small></strong></div><button class="button button-orange button-wide" type="submit">Enviar solicitud <span aria-hidden="true">↗</span></button><p class="form-legal">Al continuar, confirmas que los datos ingresados son correctos.</p></form></div></section>
+<section class="form-page page-wrap">
+  <a class="back-link" href="{% url 'equipment_detail' item.pk %}">← Volver al equipo</a>
+  <div class="form-layout">
+    <div class="form-intro">
+      <p class="eyebrow"><span></span> Solicitud de arriendo</p>
+      <h1>RESERVA TU<br><em>EQUIPO.</em></h1>
+      <p>Completa los datos y revisaremos disponibilidad para tus fechas. La solicitud no genera un cobro inmediato.</p>
+      <div class="mini-equipment"><img src="{{ item.image_url }}" alt=""><div><strong>{{ item.name }}</strong><span>${{ item.daily_rate|intcomma }} CLP / día + IVA</span></div></div>
+    </div>
+    <form class="rental-form" method="post" novalidate>
+      {% csrf_token %}
+      <h2>Datos del arriendo</h2>
+      <p class="form-caption">Todos los campos son obligatorios.</p>
+      {% if form.non_field_errors %}<div class="form-errors">{{ form.non_field_errors }}</div>{% endif %}
+      {% for field in form %}
+        <div class="form-field"><label for="{{ field.id_for_label }}">{{ field.label }}</label>{{ field }}{% if field.errors %}<span class="field-error">{{ field.errors|join:', ' }}</span>{% endif %}</div>
+      {% endfor %}
+      <section class="stock-availability" aria-live="polite" data-availability-url="{% url 'rent_equipment' item.pk %}?availability=1">
+        <div class="stock-heading"><strong>Disponibilidad por sede</strong><span id="stock-total">{{ total_available }} unidades</span></div>
+        <p class="stock-caption" id="stock-status">Disponibles entre {{ availability_start_date|date:'d/m/Y' }} y {{ availability_end_date|date:'d/m/Y' }}. Se actualiza al cambiar las fechas.</p>
+        <ul id="stock-list">
+          {% for entry in availability %}
+            <li data-branch-id="{{ entry.branch.pk }}" data-quantity="{{ entry.quantity }}">
+              <span><strong>{{ entry.branch.name }}</strong><small>{{ entry.branch.region }} · {{ entry.branch.address }}</small></span>
+              <b>{% if entry.quantity %}{{ entry.quantity }} disponible{{ entry.quantity|pluralize:"s" }}{% else %}Sin disponibilidad{% endif %}</b>
+            </li>
+          {% endfor %}
+        </ul>
+      </section>
+      <div class="form-total"><span>Tarifa diaria</span><strong>${{ item.daily_rate|intcomma }} CLP <small>+ IVA</small></strong></div>
+      <button class="button button-orange button-wide" type="submit">Enviar solicitud <span aria-hidden="true">↗</span></button>
+      <p class="form-legal">Al continuar, confirmas que los datos ingresados son correctos.</p>
+    </form>
+  </div>
+</section>
 {% endblock %}

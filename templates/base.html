@@ -9,7 +9,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700;800&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="{% static 'catalog/site.css' %}">
+  <link rel="stylesheet" href="{% static 'catalog/site.css' %}?v=2">
   {% block extra_head %}{% endblock %}
 </head>
 <body>
@@ -18,8 +18,12 @@
     <nav class="main-nav" aria-label="Navegación principal">
       <a href="{% url 'catalog' %}#catalogo">Catálogo</a>
       <a href="{% url 'catalog' %}#sedes">Sedes</a>
+      <a href="{% url 'catalog' %}#como-arrendar">Cómo arrendar maquinaria</a>
       {% if user.is_authenticated %}
         <a href="{% url 'my_rentals' %}">Mis arriendos</a>
+      {% endif %}
+      {% if user.is_superuser %}
+        <a href="{% url 'inventory_management' %}">Gestión de inventario</a>
       {% endif %}
     </nav>
     <div class="header-actions">
@@ -34,8 +38,13 @@
   </header>
   {% if messages %}<div class="message-stack">{% for message in messages %}<div class="message {{ message.tags }}">{{ message }}</div>{% endfor %}</div>{% endif %}
   <main>{% block content %}{% endblock %}</main>
-  <footer class="site-footer"><a class="brand brand-footer" href="{% url 'catalog' %}"><span class="brand-mark">M</span><span>MAQUINARIAS<span class="brand-accent">CHILE</span></span></a><span>Equipos que mueven proyectos.</span><span>© 2026 Maquinarias Chile</span></footer>
-  <script src="{% static 'catalog/site.js' %}" defer></script>
+  <footer class="site-footer">
+    <a class="brand brand-footer" href="{% url 'catalog' %}"><span class="brand-mark">M</span><span>MAQUINARIAS<span class="brand-accent">CHILE</span></span></a>
+    <span>Equipos que mueven proyectos.</span>
+    <span class="footer-identification">Constanza Bravo · Sección TI3041 · 2026</span>
+    <span>© 2026 Maquinarias Chile</span>
+  </footer>
+  <script src="{% static 'catalog/site.js' %}?v=2" defer></script>
   {% block extra_scripts %}{% endblock %}
 </body>
 </html>

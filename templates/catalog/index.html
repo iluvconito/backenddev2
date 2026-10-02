@@ -28,13 +28,47 @@
   <div class="equipment-grid">
     {% for item in equipment %}
       <article class="equipment-card" data-category="{{ item.category }}" data-search="{{ item.name }} {{ item.brand }}">
-        <a class="equipment-image" href="{% url 'equipment_detail' item.pk %}"><img src="{{ item.image_url }}" alt="{{ item.name }}" loading="lazy"><span class="availability"><i></i> Disponible</span><span class="image-arrow" aria-hidden="true">↗</span></a>
+        <a class="equipment-image" href="{% url 'equipment_detail' item.pk %}"><img src="{{ item.image_url }}" alt="{{ item.name }}" loading="lazy"><span class="availability"><i></i> {{ item.available_quantity }} disponible{{ item.available_quantity|pluralize:"s" }} ahora</span><span class="image-arrow" aria-hidden="true">↗</span></a>
         <div class="equipment-body"><div class="equipment-meta"><span>{{ item.get_category_display }}</span><span>{{ item.brand }}</span></div><h3><a href="{% url 'equipment_detail' item.pk %}">{{ item.name }}</a></h3><div class="equipment-bottom"><p><strong>${{ item.daily_rate|intcomma }}</strong><span> / día + IVA</span></p><a class="text-arrow" href="{% url 'equipment_detail' item.pk %}" aria-label="Ver {{ item.name }}">↗</a></div></div>
       </article>
     {% empty %}<div class="empty-state">{% if has_available_equipment %}<h3>No encontramos equipos para esta búsqueda</h3><p>Prueba con otra categoría o término de búsqueda.</p><a href="{% url 'catalog' %}">Ver catálogo completo ↗</a>{% else %}<h3>Por ahora no hay maquinaria disponible</h3><p>Vuelve a revisar pronto o contáctanos para conocer próximas disponibilidades.</p><a href="#sedes">Contactar una sede ↗</a>{% endif %}</div>{% endfor %}
     <div class="empty-state" id="catalog-empty" hidden><h3>No encontramos equipos para esta búsqueda</h3><p>Prueba con otra categoría o término.</p></div>
   </div>
 </section>
-<section class="branch-section" id="sedes"><div class="page-wrap branch-layout"><div><p class="eyebrow"><span></span> Estamos cerca de tu obra</p><h2>5 REGIONES.<br>UN MISMO ESTÁNDAR.</h2><p class="branch-copy">Coordina el retiro desde la sede que mejor se adapte a tu proyecto.</p></div><div class="branch-list">{% for branch in branches %}<div class="branch-row"><span class="branch-number">0{{ forloop.counter }}</span><div><strong>{{ branch.name }}</strong><span>{{ branch.region }} · {{ branch.address }}</span></div><a href="tel:{{ branch.phone }}" aria-label="Llamar a {{ branch.name }}">↗</a></div>{% endfor %}</div></div></section>
+<section class="rental-guide page-wrap" id="como-arrendar">
+  <div class="section-heading">
+    <div><p class="eyebrow"><span></span> Simple y transparente</p><h2>¿CÓMO ARRENDAR?</h2></div>
+    <p>Te acompañamos desde la elección del equipo<br>hasta la confirmación de tu solicitud.</p>
+  </div>
+  <div class="guide-grid">
+    <article class="guide-card"><span>01</span><h3>Elige tu maquinaria</h3><p>Revisa el catálogo, compara equipos y selecciona el que se ajuste al trabajo de tu obra.</p></article>
+    <article class="guide-card"><span>02</span><h3>Indica sede y fechas</h3><p>Selecciona dónde retirar el equipo y las fechas en que lo necesitas.</p></article>
+    <article class="guide-card"><span>03</span><h3>Envía tu solicitud</h3><p>Ingresa a tu cuenta y envía la solicitud. El arriendo queda sujeto a confirmación de disponibilidad.</p></article>
+  </div>
+</section>
+<section class="branch-section" id="sedes"><div class="page-wrap branch-layout"><div><p class="eyebrow"><span></span> Estamos cerca de tu obra</p><h2>5 REGIONES.<br>UN MISMO ESTÁNDAR.</h2><p class="branch-copy">Consulta la ubicación de nuestras sedes para planificar el retiro de tu equipo.</p></div><div class="branch-list">{% for branch in branches %}<div class="branch-row"><div class="branch-location"><strong>{{ branch.name }}</strong><span>{{ branch.region }} · {{ branch.address }}</span></div><span class="branch-contact">Teléfono: +56 9 0000 0000</span></div>{% endfor %}</div></div></section>
+<section class="maintenance-section page-wrap" id="mantenimiento">
+  <div class="section-heading">
+    <div><p class="eyebrow"><span></span> Cuida el equipo durante el arriendo</p><h2>MANTENCIÓN EN TERRENO</h2></div>
+    <p>Buenas prácticas para trabajar con seguridad<br>y ayudar a conservar la maquinaria.</p>
+  </div>
+  <div class="maintenance-grid">
+    <article class="maintenance-card"><span aria-hidden="true">01</span><h3>Revisa antes de operar</h3><p>Haz una inspección visual al inicio de cada jornada. Comprueba neumáticos u orugas, luces, alarmas y posibles fugas.</p></article>
+    <article class="maintenance-card"><span aria-hidden="true">02</span><h3>Controla niveles y limpieza</h3><p>Verifica los niveles indicados en el manual y mantén limpios radiadores, filtros y zonas de ventilación, siempre con el equipo detenido.</p></article>
+    <article class="maintenance-card"><span aria-hidden="true">03</span><h3>Opera según el manual</h3><p>Respeta la capacidad de carga, usa los elementos de protección y deja la operación solo a personal capacitado.</p></article>
+    <article class="maintenance-card"><span aria-hidden="true">04</span><h3>Reporta cualquier falla</h3><p>Detén el equipo si detectas ruidos, alertas o funcionamiento anormal y comunícate con el proveedor antes de continuar.</p></article>
+  </div>
+</section>
+<section class="faq-section" id="preguntas-frecuentes">
+  <div class="page-wrap faq-layout">
+    <div><p class="eyebrow"><span></span> Resolvemos tus dudas</p><h2>PREGUNTAS<br>FRECUENTES</h2><p class="branch-copy">¿Tienes otra consulta? Envíanos tu solicitud y nuestro equipo te orientará.</p></div>
+    <div class="faq-list">
+      <details class="faq-item"><summary>¿Cómo se confirma una solicitud de arriendo?<span aria-hidden="true"></span></summary><p>Al enviar el formulario recibimos tu solicitud. El arriendo queda confirmado solo cuando nuestro equipo valida la disponibilidad del equipo, la sede y las fechas.</p></details>
+      <details class="faq-item"><summary>¿Necesito una cuenta para solicitar maquinaria?<span aria-hidden="true"></span></summary><p>Sí. Debes ingresar o crear una cuenta para completar y revisar tus solicitudes de arriendo.</p></details>
+      <details class="faq-item"><summary>¿Qué pasa si el equipo presenta una falla?<span aria-hidden="true"></span></summary><p>Detén la operación de forma segura y avisa al proveedor cuanto antes. No realices reparaciones ni intervenciones sin autorización.</p></details>
+      <details class="faq-item"><summary>¿Qué debo hacer al terminar el arriendo?<span aria-hidden="true"></span></summary><p>Coordina la devolución con la sede y entrega el equipo en las condiciones acordadas. Informa cualquier daño o problema que hayas detectado.</p></details>
+    </div>
+  </div>
+</section>
 <section class="closing-band"><div class="page-wrap closing-inner"><p class="eyebrow eyebrow-light"><span></span> ¿Listo para empezar?</p><h2>Tu proyecto no espera.<br><em>Tu equipo tampoco.</em></h2><a class="button button-orange" href="#catalogo">Ver maquinaria <span aria-hidden="true">↑</span></a></div></section>
 {% endblock %}
